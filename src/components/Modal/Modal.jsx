@@ -24,16 +24,16 @@ const customStyles = {
 };
 
 Modal.setAppElement('#root');
-
 export const ModalImg = ({ image, closeModal, isModalOpen }) => {
   return (
     <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        onAfterOpen={() => disableBodyScroll(document)}
-        onAfterClose={() => enableBodyScroll(document)} >
-        <img src={image.largeImageURL} alt={image.tags} loading="lazy" />
+      isOpen={isModalOpen}
+      onRequestClose={closeModal}
+      style={customStyles}
+      onAfterOpen={() => disableBodyScroll(document)}
+      onAfterClose={() => enableBodyScroll(document)}
+    >
+      <img src={image.largeImageURL} alt={image.tags} loading="lazy" />
     </Modal>
   );
 };
