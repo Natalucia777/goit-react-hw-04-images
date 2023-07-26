@@ -30,6 +30,21 @@ function App() {
   const [perPage] = useState(12);
 
   useEffect(() => {
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { searchName, page } = this.state;
+  //   if (prevState.searchName !== searchName || prevState.page !== page) {
+  //     this.getPictures(searchName, page);
+  //   }
+  // }
+    
+  // getPictures = async (searchName, page) => {
+  //   this.setState({ isLoading: true, error: null });
+  //   try {
+  //     const { hits, totalHits } = await API.getComponentImages(searchName, page);
+  //     if (!hits.length) {
+  //       this.setState({ isEmpty: true });
+  //       return;
+  //     }
     async function loadImages(searchName, page) {
       setIsLoading(true);
       setError(null);
@@ -39,101 +54,83 @@ function App() {
             setIsEmpty(false);
             return;
             }
-            const { hits, totalHits } = await API.getImages(searchName, page);
+            const { hits, totalHits } = await API.getComponentImages(searchName, page);
             if (!hits.length) {
               setIsEmpty(true);
               return;
-            }
+          }
+  //     this.setState(prevState => ({
+  //       images: [...prevState.images, ...hits],
+  //       page,
+  //       isShownButton: page < Math.ceil(totalHits / this.state.perPage),
+  //     }));
+  //   } catch (error) {
+  //     if (error.code !== 'ERR_CANCELED') {
+  //       this.setState({
+  //         error: 'Please, reloading the page!',
+  //       });
+  //     }
+  //   } finally {
+  //     this.setState({ isLoading: false });
+  //   }
+  // };
+        setImages(prevStateImages => [...prevStateImages, ...hits]);
+        setPage(page);
+        setIsShownButton(page < Math.ceil(totalHits / perPage));
+      } catch (error) {
+        if (error.code !== 'ERR_CANCELED') {
+          setError('Oops! Something went wrong! Try reloading the page!');
         }
-    }
-  }, []);
-  
-  
-  
-  
-  componentDidUpdate(prevProps, prevState) {
-    
-    const { searchName, page } = this.state;
-    if (prevState.searchName !== searchName || prevState.page !== page) {
-      this.getPictures(searchName, page);
-    }
-  }
-
-  getPictures = async (searchName, page) => {
-    this.setState({ isLoading: true, error: null });
-    try {
-      const { hits, totalHits } = await API.getComponentImages(searchName, page);
-      if (!hits.length) {
-        this.setState({ isEmpty: true });
-        return;
+      } finally {
+        setIsLoading(false);
       }
-
-      this.setState(prevState => ({
-        images: [...prevState.images, ...hits],
-        page,
-        isShownButton: page < Math.ceil(totalHits / this.state.perPage),
-      }));
-
-    } catch (error) {
-      if (error.code !== 'ERR_CANCELED') {
-        this.setState({
-          error: 'Please, reloading the page!',
-        });
-      }
-    } finally {
-      this.setState({ isLoading: false });
     }
+    loadImages(searchName, page);
+  }, [searchName, page, perPage]);
+  // handleSearch = searchName => {
+  //   this.setState({
+  //     searchName,
+  //     images: [],
+  //     page: 1,
+  //     isShownButton: false,
+  //     isEmpty: false,
+  //     error: null,
+  //   });
+  // };
+  const handleSearch = searchName => {
+    setSearchName(searchName);
+    setImages([]);
+    setPage(1);
+    setIsShownButton(false);
+    setIsEmpty(false);
+    setError(null);
   };
-
-  handleSearch = searchName => {
-
-    this.setState({
-      searchName,
-      images: [],
-      page: 1,
-      isShownButton: false,
-      isEmpty: false,
-      error: null,
-    });
+// loadMore = () => {
+//     this.setState(prevState => ({
+//       page: prevState.page + 1,
+//     }));
+//   };
+  const loadMore = () => {
+    setPage(prevStatePage => prevStatePage + 1);
   };
-
-  loadMore = () => {
-
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
-
-  render() {
-    const { images, isLoading, error, isEmpty, isShownButton } = this.state;
-    
+  //  const { images, isLoading, error, isEmpty, isShownButton } = this.state;
     return (
-
       <AppBox>
-        
-        <Searchbar onSubmit={this.handleSearch} />
-        
-        {isEmpty && <Text>
+        <Searchbar onSubmit={handleSearch} />
+          {isEmpty && <Text>
           No search images and photos.
         </Text>}
-
         {isLoading && <Loader />}
-
         <div>
           <ImageGallery items={images} />
-
-          {isShownButton && <Button onClick={this.loadMore} />}
+          {isShownButton && <Button onClick={loadMore} />}
         </div>
-
         {error && <ErrorMessage>
           {error}
         </ErrorMessage>}
-
         <ToastContainer autoClose={2500} />
-
       </AppBox>
     );
-  }
 }
 
 export default App;
