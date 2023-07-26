@@ -3,8 +3,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ImSearch } from 'react-icons/im';
 import { SearchHeader, SearchForm, FormInput, SearchFormButton, ButtonLabel } from './Searchbar.styled';
-
 class Searchbar extends Component {
+
   state = {
     searchName: '',
   };
@@ -14,8 +14,8 @@ class Searchbar extends Component {
   };
 
   handleSubmit = evt => {
+    
     evt.preventDefault();
-
     if (this.state.searchName.trim() === '') {
       toast.error(
         'Please enter your search term.',
@@ -26,19 +26,25 @@ class Searchbar extends Component {
     this.props.onSubmit(this.state.searchName);
     this.reset();
   };
-  reset = () => {
+    reset = () => {
     this.setState({
       searchName: '',
     });
   };
+
   render() {
+   
     return (
       <SearchHeader className="searchbar">
         <SearchForm onSubmit={this.handleSubmit} className="form">
+          
           <SearchFormButton type="submit">
+            
             <ImSearch />
+            
             <ButtonLabel>Search</ButtonLabel>
           </SearchFormButton>
+          
           <FormInput
             type="text"
             autoComplete="off"
@@ -47,6 +53,7 @@ class Searchbar extends Component {
             value={this.state.searchName}
             onChange={this.handleChange}
           />
+
         </SearchForm>
       </SearchHeader>
     );
